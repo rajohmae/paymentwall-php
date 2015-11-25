@@ -1,0 +1,141 @@
+<!Doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link type="text/css" rel="stylesheet" href="http://cdn.joygames.me/style/css/official/pay/op2/op2_charge.css?20140827"/>
+    <script language="Javascript" type="text/javascript" src="http://cdn.joygames.me/js/official/../lib/jquery-1.8.2.min.js"></script>
+
+    <script>
+        var curbuyid = 0;
+        $(function(){
+            $("body").append('<div id="overlayer"></div><div id="loading_tip">&nbsp;</div>');
+            $("#overlayer,#loading_tip").show();
+            $('.charge_amount li').click(function(){
+                $(this).addClass('current').siblings().removeClass('current');
+                var str = $(this).find('p').text().substr(4);
+                $("#amoutUs").text('USD ' + str);
+                curbuyid = $(this).data("pid");
+            });
+
+        });
+    </script>
+    <script type="text/javascript">
+
+        function buy(paycode,playspan_code){
+            var pid = curbuyid;
+            if (pid<1) {alert("You must first select an amount to continue!");return};
+            var server = $('#server').val();
+            var account = $('#account').val();
+            var game = $('#game').val();
+            $("#overlayer,#loading_tip").show();
+            $.getJSON('http://pay.joygames.me/index.php/pay/buy',{'server':server, 'account':account, 'game':game,'productid': pid, 'rd':Math.random(), 'paycode':paycode},function (data){
+                if(data.error) {
+                    alert(data.error);
+                    window.location.replace(window.location.href);
+                } else {
+                    $.post("http://pay.joygames.me/index.php/order/checkout",data,function(dt) {
+                        if(dt.error) {
+                            alert(dt.error);
+                            window.location.replace(window.location.href);
+                        } else {
+                            window.location.href = dt.URI + "&paycode="+paycode;
+                        }
+                    }, 'json')
+                }
+            })
+        }
+
+        function show_loading(){
+            $("#overlayer,#loading_tip").show();
+        }
+        function hide_loading(){
+            $("#overlayer,#loading_tip").hide();
+        }
+
+
+    </script>
+
+</head>
+<body onLoad="hide_loading()">
+
+<div class="games_charge_wrap" id="gamesCharge">
+    <div class="frame_top"><h3>Go Purchase</h3></div>
+    <div class="frame_center cfix">
+                <div class="w867">
+            <div class="charge_state">
+                <p class="server">Your server: <span>[US S17]</span></p>
+                <p class="character">Account: <span>rajohmae</span></p>
+            </div>
+            <div class="charge_options cls" style="position:relative; ">
+                <p class="charge_title fl">Select Charging Amount : <span id="amoutUs"> </span></p>
+                <p class="info fr">Please note that  <span>$1 USD = 40 Gold</span></p>
+                <div class="cls"></div>
+                <ul class="charge_amount cfix">
+                                            <li lang="200" data-pid="1">
+                            <em class="p2"></em>
+                            <p>USD 5</p>
+                            <i>200 Gold</i>
+                        </li>
+                                            <li lang="400" data-pid="2">
+                            <em class="p3"></em>
+                            <p>USD 10</p>
+                            <i>400 Gold</i>
+                        </li>
+                                            <li lang="800" data-pid="3">
+                            <em class="p4"></em>
+                            <p>USD 20</p>
+                            <i>800 Gold</i>
+                        </li>
+                                            <li lang="300" data-pid="4">
+                            <em class="p5"></em>
+                            <p>USD 8</p>
+                            <i>300 Gold</i>
+
+                        </li>
+                                    </ul>
+                <p class="payment_info">Choose a Payment Option:</p>
+                <ul class="charge_payment cfix">
+                    
+                                                    <li  onClick="javascript:buy('g2s','');" ><a><img src="http://cdn.joygames.me/style/images/official/pay/bleach/g2s.jpg"></a></li>
+                        
+                        
+                                                <li  onClick="javascript:buy('paymentwall','');"><a><img src="http://cdn.joygames.me/style/images/official/pay/bleach/paymentwall_logo.jpg"></a></li>
+                        
+
+                                                    <li>
+                                <a href="javascript:;">
+                                    <img src="http://cdn.joygames.me/style/images/official/pay/bleach/coming_soon.jpg">
+                                </a>
+                            </li>
+                                                            </ul>
+            <!--
+                <div style="position:absolute; right:20px; bottom:16px; *bottom:0px; width:250px; height:61px;">
+                	<a href="http://www.joyfun.com/news?id=3" target="_blank"><img src="http://cdn.joyfun.com/style/images/official/bleach/ad_lottery_pay_01.png" widht="250" height="61"/></a>
+                </div>
+            -->            </div>
+        </div>
+    </div>
+    <div class="frame_bottom"></div>
+    <a href="javascript:;" title="Close" class="closeWin" id ="pay_closed"></a>
+</div>
+
+<input type="hidden" id="server" value="10017">
+<input type="hidden" id="account" value="1621547">
+<input type="hidden" id="game"  value="1788888888">
+
+
+
+
+<div id="overlayer" style="display: none;"></div>
+<div id="loading_tip" style="display: none;">&nbsp;</div>
+</body>
+</html>
+<script type="text/javascript">
+    $(function(){
+        $('.closeWin').click(function(){
+            parent.window.opener = null;
+            parent.window.open("", "_self");
+            parent.window.close();
+        });
+    });
+</script>
